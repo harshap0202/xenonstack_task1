@@ -2,17 +2,27 @@
 
 <p id="description">Creating a custom command in linux and giving it features</p>
 
+
 <h2>Project Screenshots:</h2>
 
 <h2>Section A</h2>
+
+1. Executing command - man internsctl
+
+![Screenshot (1077)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/078cc712-f7d6-41a6-abee-652977186702)
+
+![Screenshot (1076)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/4d4610bc-e01d-41cb-a1ab-b86dc805fc0c)
+
 
 2. Executing command - internsctl --help
 
 ![Screenshot (1064)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/239afddf-fd57-491b-adcf-94afd29b7e3e)
 
+
 3. Executing command - internsctl --version
 
 ![Screenshot (1065)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/cd135b05-891c-4586-a193-baebab3b2eec)
+
 
 <h2>Section B</h2>
 
@@ -23,6 +33,11 @@ Part 1. Executing command - internsctl cpu getinfo
 Executing command - internsctl memory getinfo
 
 ![Screenshot (1066)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/d80a96f9-fb1e-4a3d-96c3-32030e74bfc9)
+
+
+Part 2. Executing command - internsctl user create <username>
+
+![Screenshot (1078)](https://github.com/harshap0202/xenonstack_task1/assets/116268106/bd5bc2cb-25ca-4592-b1af-87695582d6ce)
 
 
 Part 3. Executing command - internsctl file getinfo <file-name>
