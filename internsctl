@@ -1,0 +1,148 @@
+#!/bin/bash
+
+# Function to display help
+show_help() {
+    echo "Usage: internsctl [COMMAND] [SUBCOMMAND]"
+    echo "Commands:"
+    echo "  cpu getinfo           Get CPU information"
+    echo "  memory getinfo        Get memory information"
+    echo "  user create <user>    Create a new user"
+    echo "  user list             List all regular users"
+    echo "  user list --sudo-only List all users with sudo permissions"
+    echo "  file getinfo [options] <file-name> Get file information"
+    echo "Options for file getinfo:"
+    echo "  --size, -s           Print size of the file"
+    echo "  --permissions, -p    Print file permissions"
+    echo "  --owner, -o          Print file owner"
+    echo "  --last-modified, -m  Print last modification time"
+    echo "  --help               Display this help and exit"
+    echo "  --version            Output version information and exit"
+}
+
+# Function to display version
+show_version() {
+    echo "internsctl version v0.1.0"
+}
+
+# Function to display CPU information
+get_cpu_info() {
+    lscpu
+}
+
+# Function to display Memory information
+get_memory_info() {
+    free
+}
+
+# Function to create a new user
+create_user() {
+    sudo useradd -m "$1" && echo "User $1 created successfully."
+}
+
+# Function to list all regular users
+list_users() {
+    awk -F':' '$3 >= 1000 && $3 <= 60000 {print $1}' /etc/passwd
+}
+
+# Function to list all users with sudo permissions
+list_sudo_users() {
+    grep '^sudo:.*$' /etc/group | cut -d: -f4
+}
+
+# Function to get file information
+get_file_info() {
+    local option=$1
+    local filename=$2
+
+    local size=$(stat -c %s "$filename")
+    local permissions=$(stat -c %A "$filename")
+    local owner=$(stat -c %U "$filename")
+    local modify=$(stat -c %y "$filename")
+
+    case "$option" in
+        --size|-s)
+            echo "$size"
+            ;;
+        --permissions|-p)
+            echo "$permissions"
+            ;;
+        --owner|o)
+            echo "$owner"
+            ;;
+        --last-modified|m)
+            echo "$modify"
+            ;;
+        "")
+            echo "File: $filename"
+            echo "Access: $permissions"
+            echo "Size(B): $size"
+            echo "Owner: $owner"
+            echo "Modify: $modify"
+            ;;
+        *)
+            echo "Invalid option. Try 'internsctl file getinfo --help' for more information."
+            ;;
+    esac
+}
+
+# Check for the provided argument
+case "$1" in
+    cpu)
+        if [ "$2" = "getinfo" ]; then
+            get_cpu_info
+        else
+            echo "Invalid subcommand for cpu. Try 'internsctl --help' for more information."
+        fi
+        ;;
+    memory)
+        if [ "$2" = "getinfo" ]; then
+            get_memory_info
+        else
+            echo "Invalid subcommand for memory. Try 'internsctl --help' for more information."
+        fi
+        ;;
+    user)
+        case "$2" in
+            create)
+                if [ -n "$3" ]; then
+                    create_user "$3"
+                else
+                    echo "Username not specified. Usage: 'internsctl user create <username>'"
+                fi
+                ;;
+            list)
+                if [ "$3" = "--sudo-only" ]; then
+                    list_sudo_users
+                else
+                    list_users
+                fi
+                ;;
+            *)
+                echo "Invalid subcommand for user. Try 'internsctl --help' for more information."
+                ;;
+        esac
+        ;;
+
+file)
+    if [ "$2" = "getinfo" ]; then
+        if [ -n "$4" ]; then
+            get_file_info "$3" "$4"
+        else
+            get_file_info "" "$3"
+        fi
+    else
+        echo "Invalid subcommand for file. Try 'internsctl --help' for more information."
+    fi
+    ;;
+
+    --help)
+        show_help
+        ;;
+    --version)
+        show_version
+        ;;
+    *)
+        echo "Invalid command. Try 'internsctl --help' for more information."
+        ;;
+esac
+
